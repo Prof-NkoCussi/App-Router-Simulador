@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simulador del router · Redes I</title>
+  <meta name="description" content="Simulador del panel de un router (como el TP-Link TL-WR850N v3) para practicar: entrar al panel, configurar el Wi-Fi, el DHCP, reservar una IP, poner una IP fija y guardar una copia de seguridad. Redes I, TP N°8. Prof. Nicolás A. Cussi.">
+  <meta name="theme-color" content="#26C9A1">
+  <link rel="preload" href="assets/fonts/barlow-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/estilos.css">
+</head>
+<body>
+
+<div class="solo-pc" role="alert">
+  <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="4" y="7" width="40" height="27" rx="3"/><path d="M24 34v6M16 41h16"/></svg>
+  <h1>Abrilo desde una computadora</h1>
+  <p>El simulador del router necesita una pantalla grande: el navegador, las PC, el celular y el router van al mismo tiempo. Entrá desde una PC del laboratorio o una notebook.</p>
+</div>
+
+<div class="app">
+  <header class="app-cab">
+    <div class="app-cab__marca">
+      <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M24 24V15M24 24L9 36M24 24l15 12"/><circle cx="24" cy="24" r="5"/><rect x="17" y="1" width="14" height="10" rx="2"/><rect x="2" y="31" width="14" height="10" rx="2"/><rect x="32" y="31" width="14" height="10" rx="2"/></svg>
+      <div><b>Simulador del router</b><span>Redes I · TP N°8 — Configurando el router</span></div>
+    </div>
+    <div class="app-cab__der">
+      <button type="button" class="app-cab__alumno" data-app="nombre" title="Cambiar el nombre"><span class="sr-only">Alumno/a: </span><span id="app-alumno"></span></button>
+      <button type="button" class="boton boton--claro boton--chico" id="app-trad" data-app="traduccion" aria-pressed="true">Traducción: sí</button>
+      <button type="button" class="boton boton--claro boton--chico" data-app="de-nuevo">Empezar de nuevo</button>
+    </div>
+  </header>
+
+  <div class="app-cuerpo">
+    <section class="nv" aria-label="Navegador de tu PC">
+      <div class="nv-barra">
+        <span class="nv-puntos" aria-hidden="true"></span>
+        <form id="nv-form" class="nv-form" novalidate>
+          <button type="button" id="nv-recargar" class="nv-bt" aria-label="Recargar"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16 10a6 6 0 1 1-2-4.5M16 3v4h-4"/></svg></button>
+          <label for="nv-url" class="sr-only">Dirección</label>
+          <input id="nv-url" class="nv-url" placeholder="Escribí la dirección del router" autocomplete="off" spellcheck="false" autocapitalize="none">
+          <button type="submit" class="nv-bt nv-bt--ir">Ir</button>
+        </form>
+      </div>
+      <div id="nv-contenido" class="nv-contenido"></div>
+    </section>
+
+    <aside class="lat" aria-label="Práctica y equipos">
+      <div id="lat-tabs" class="lat-tabs" role="tablist" aria-label="Práctica y equipos"></div>
+      <div id="lat-panel" class="lat-panel" role="tabpanel" tabindex="0"></div>
+    </aside>
+  </div>
+</div>
+
+<div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-tit" hidden>
+  <div class="modal__caja"><div class="modal__cuerpo"></div></div>
+</div>
+
+<script src="assets/js/estado.js"></script>
+<script src="assets/js/panel.js"></script>
+<script src="assets/js/equipos.js"></script>
+<script src="assets/js/practica.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

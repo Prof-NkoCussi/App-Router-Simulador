@@ -38,12 +38,13 @@
     var res = rs.filter(function (x) { return x.mac === mac; })[0];
     if (!res) {
       if (!rs.length) { return { ok: false, motivo: "Todavía no hay ninguna reserva: Advanced › Network › LAN Settings › Address Reservation › Add." }; }
+      /* La tabla puede tener reservas del alumno o la que dejó el otro curso (router usado) */
       var de = rs.map(function (x) {
-        if (x.mac === S.ROUTER.mac) { return "es la del router"; }
+        if (x.mac === S.ROUTER.mac) { return "con la MAC del router"; }
         var eq = S.equipoPorMac(x.mac);
-        return eq ? "es de «" + eq.rotulo + "»" : "";
+        return eq ? "de «" + eq.rotulo + "»" : "";
       }).filter(Boolean)[0];
-      return { ok: false, motivo: "Ninguna reserva tiene la MAC de «Tu PC»" + (de ? " (la que cargaste " + de + ")" : "") + ". Buscala en «Tu PC» con ipconfig /all: es la «Dirección física»." };
+      return { ok: false, motivo: "Ninguna reserva tiene la MAC de «Tu PC»" + (de ? " (en la tabla hay una " + de + ")" : "") + ". Buscala en «Tu PC» con ipconfig /all: es la «Dirección física»." };
     }
     if (!res.activa) { return { ok: false, motivo: "La reserva de «Tu PC» está desactivada (Disabled). Borrala y cargala de nuevo con «Enable This Entry» tildado." }; }
     if (est.conf.modo === "fija") { return { ok: false, motivo: "«Tu PC» tiene una IP fija: la reserva funciona solo con la IP automática (DHCP)." }; }
@@ -113,8 +114,8 @@
     dibujar: function (cont) {
       var lista = todos(), hechos = lista.filter(function (p) { return p.hecho(); }).length;
       var fija = revisarIpFija(), reserva = revisarReserva();
-      /* El aviso de la reserva aparece cuando ya hay alguna reserva o ya se probó ipconfig /release o /renew en «Tu PC» */
-      var avisarReserva = !reserva.ok && (S.estado.router.reservas.length > 0 || !!S.estado.practica.renovo);
+      /* El aviso de la reserva aparece cuando el alumno ya guardó una reserva o probó ipconfig /release o /renew en «Tu PC» */
+      var avisarReserva = !reserva.ok && (!!S.estado.practica.reservo || !!S.estado.practica.renovo);
       var h = '<div class="pr"><div class="pr__progreso"><span>Práctica: ' + hechos + " de " + lista.length + ' pasos</span><div class="pr__barra" role="progressbar" aria-valuemin="0" aria-valuemax="' + lista.length + '" aria-valuenow="' + hechos + '"><span style="width:' + (hechos / lista.length * 100) + '%"></span></div></div>';
       GRUPOS.forEach(function (g) {
         h += '<section class="pr__grupo"><h3>' + esc(g.tit) + '</h3><ol class="pr__pasos">';

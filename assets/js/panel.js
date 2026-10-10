@@ -477,6 +477,7 @@
       if (r.reservas.some(function (x) { return x.ip === n; })) { avisar("esa IP ya está reservada para otro equipo.", "error"); return redibujar(); }
       guardando(f, function () {
         r.reservas.push({ mac: mac, ip: n, activa: f.elements.activa.checked });
+        S.marcar("reservo");
         nav.form = null;
         var eq = S.equipoPorMac(mac);
         avisar("reserva guardada" + (eq ? " para " + eq.nombre : "") + ". El equipo la recibe la próxima vez que pide IP: en una PC, con ipconfig /release y después ipconfig /renew.");

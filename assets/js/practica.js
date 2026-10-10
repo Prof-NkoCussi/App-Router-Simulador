@@ -32,10 +32,26 @@
     return { ok: true };
   }
 
-  function reservaHecha() {
-    var mac = S.equipo("pc1").mac, est = S.estado.equipos.pc1;
-    var res = S.estado.router.reservas.filter(function (x) { return x.activa && x.mac === mac; })[0];
-    return !!res && est.conf.modo === "dhcp" && est.ip === res.ip && !!S.estado.practica.reservaComprobada;
+  /* ¿Qué le falta a la reserva de «Tu PC»? */
+  function revisarReserva() {
+    var mac = S.equipo("pc1").mac, est = S.estado.equipos.pc1, rs = S.estado.router.reservas;
+    var res = rs.filter(function (x) { return x.mac === mac; })[0];
+    if (!res) {
+      if (!rs.length) { return { ok: false, motivo: "Todavía no hay ninguna reserva: Advanced › Network › LAN Settings › Address Reservation › Add." }; }
+      var de = rs.map(function (x) {
+        if (x.mac === S.ROUTER.mac) { return "es la del router"; }
+        var eq = S.equipoPorMac(x.mac);
+        return eq ? "es de «" + eq.rotulo + "»" : "";
+      }).filter(Boolean)[0];
+      return { ok: false, motivo: "Ninguna reserva tiene la MAC de «Tu PC»" + (de ? " (la que cargaste " + de + ")" : "") + ". Buscala en «Tu PC» con ipconfig /all: es la «Dirección física»." };
+    }
+    if (!res.activa) { return { ok: false, motivo: "La reserva de «Tu PC» está desactivada (Disabled). Borrala y cargala de nuevo con «Enable This Entry» tildado." }; }
+    if (est.conf.modo === "fija") { return { ok: false, motivo: "«Tu PC» tiene una IP fija: la reserva funciona solo con la IP automática (DHCP)." }; }
+    if (est.ip !== res.ip || !S.estado.practica.reservaComprobada) {
+      if (est.liberada) { return { ok: false, motivo: "Ya soltaste la IP: falta ipconfig /renew en «Tu PC»." }; }
+      return { ok: false, motivo: "Falta comprobarla: en «Tu PC», ipconfig /release e ipconfig /renew. Tiene que aparecer la IP " + S.RED + res.ip + "." };
+    }
+    return { ok: true };
   }
 
   /* Los pasos, con el mismo orden y las mismas palabras que la práctica del TP N°8 */
@@ -63,9 +79,9 @@
       { id: "rango", txt: "En Advanced › Network › LAN Settings, anotá el rango DHCP. Mirá los dispositivos conectados en Client List o en Basic › Network Map.",
         pista: "Advanced › Network › LAN Settings: «IP Address Pool» es el rango DHCP. Basic › Network Map muestra los clientes.",
         hecho: function () { return !!S.estado.practica.vioRango && !!S.estado.practica.vioDispositivos; } },
-      { id: "reserva", txt: "Buscá la MAC de «Tu PC» con ipconfig /all y reservale una IP en Address Reservation. Comprobala con ipconfig /release y /renew.",
-        pista: "La MAC es la «Dirección física». En LAN Settings › Address Reservation › Add, cargá la MAC y una IP. Después, en Tu PC: ipconfig /release y ipconfig /renew.",
-        hecho: reservaHecha }
+      { id: "reserva", txt: "Buscá la MAC de «Tu PC» con ipconfig /all y reservale una IP en Address Reservation. Comprobala con ipconfig /release e ipconfig /renew.",
+        pista: "La MAC es la «Dirección física». En LAN Settings › Address Reservation › Add, cargá la MAC y una IP. Después, en «Tu PC»: ipconfig /release e ipconfig /renew.",
+        hecho: function () { return revisarReserva().ok; } }
     ] },
     { tit: "4- IP fija y copia de seguridad", pasos: [
       { id: "fija", txt: "En «Otra PC», poné una IP fija en Windows, fuera del rango DHCP, y comprobala con ipconfig.",
@@ -96,13 +112,16 @@
     completa: function () { return todos().every(function (p) { return p.hecho(); }); },
     dibujar: function (cont) {
       var lista = todos(), hechos = lista.filter(function (p) { return p.hecho(); }).length;
-      var fija = revisarIpFija();
+      var fija = revisarIpFija(), reserva = revisarReserva();
+      /* El aviso de la reserva aparece cuando ya hay alguna reserva o ya se probó ipconfig /release o /renew en «Tu PC» */
+      var avisarReserva = !reserva.ok && (S.estado.router.reservas.length > 0 || !!S.estado.practica.renovo);
       var h = '<div class="pr"><div class="pr__progreso"><span>Práctica: ' + hechos + " de " + lista.length + ' pasos</span><div class="pr__barra" role="progressbar" aria-valuemin="0" aria-valuemax="' + lista.length + '" aria-valuenow="' + hechos + '"><span style="width:' + (hechos / lista.length * 100) + '%"></span></div></div>';
       GRUPOS.forEach(function (g) {
         h += '<section class="pr__grupo"><h3>' + esc(g.tit) + '</h3><ol class="pr__pasos">';
         g.pasos.forEach(function (p, i) {
           var ok = p.hecho();
-          var extra = p.id === "fija" && S.estado.equipos.pc2.conf.modo === "fija" && !fija.ok ? '<span class="pr__falla">' + esc(fija.motivo) + "</span>" : "";
+          var extra = p.id === "fija" && S.estado.equipos.pc2.conf.modo === "fija" && !fija.ok ? '<span class="pr__falla">' + esc(fija.motivo) + "</span>" :
+            p.id === "reserva" && avisarReserva ? '<span class="pr__falla">' + esc(reserva.motivo) + "</span>" : "";
           h += '<li class="pr__paso' + (ok ? " es-hecho" : "") + '"><span class="pr__marca" aria-hidden="true">' + (ok ? "✓" : String.fromCharCode(97 + i) + ")") + "</span>" +
             '<div><p>' + esc(p.txt) + '<span class="sr-only">' + (ok ? " (hecho)" : " (pendiente)") + "</span></p>" + extra +
             (ok ? "" : '<details class="pr__pista"><summary>Pista</summary><p>' + esc(p.pista) + "</p></details>") + "</div></li>";

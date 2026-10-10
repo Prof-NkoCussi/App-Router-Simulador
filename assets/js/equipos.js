@@ -152,6 +152,7 @@
       return;
     }
     if (bajo === "ipconfig /release") {
+      if (id === "pc1") { S.marcar("renovo"); }
       if (est.conf.modo === "fija") { salida(["", "Configuración IP de Windows", "", "El adaptador Ethernet no está habilitado para DHCP."]); return; }
       if (est.liberada) { salida(["", "Configuración IP de Windows", "", "Ya se liberó la dirección IP para el adaptador Ethernet."]); return; }
       S.liberar(id);
@@ -160,6 +161,7 @@
       return;
     }
     if (bajo === "ipconfig /renew") {
+      if (id === "pc1") { S.marcar("renovo"); }
       if (est.conf.modo === "fija") { salida(["", "Configuración IP de Windows", "", "El adaptador Ethernet no está habilitado para DHCP."]); return; }
       v.ocupada = true;
       var ok = S.pedirIp(id);
@@ -190,6 +192,8 @@
       return;
     }
     salida(['"' + cmd.split(" ")[0] + '" no se reconoce como un comando interno o externo,', "programa o archivo por lotes ejecutable."]);
+    /* Un modificador solo (/renew, /release, /all) */
+    if (/^\/(all|release|renew)$/.test(bajo)) { salida(["Simulador: " + bajo + " va después del comando. Escribí: ipconfig " + bajo], "t-nota"); }
   }
 
   /* Comprueba la IP fija de la otra PC al ejecutar ipconfig (paso 4 a) */

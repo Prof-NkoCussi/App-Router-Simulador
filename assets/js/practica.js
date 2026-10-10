@@ -41,10 +41,10 @@
   /* Los pasos, con el mismo orden y las mismas palabras que la práctica del TP N°8 */
   var GRUPOS = [
     { tit: "1- Entrar al router", pasos: [
-      { id: "reset", txt: "Si el router ya se usó, reset de fábrica: botón WPS/RESET apretado más de 5 segundos.",
+      { id: "reset", txt: "Si el router ya se usó, reset de fábrica: en «Router», botón WPS/RESET apretado más de 5 segundos.",
         pista: "El router ya tiene la contraseña de otro curso. En la pestaña «Router», mantené apretado el botón WPS/RESET más de 5 segundos.",
         hecho: function () { return !!S.estado.practica.reset; } },
-      { id: "ipconfig", txt: "Buscá la puerta de enlace con ipconfig.",
+      { id: "ipconfig", txt: "En «Tu PC», buscá la puerta de enlace con ipconfig.",
         pista: "En «Tu PC», Símbolo del sistema: escribí ipconfig y buscá «Puerta de enlace predeterminada».",
         hecho: function () { return !!S.estado.practica.ipconfig; } },
       { id: "admin", txt: "Entrá a http://tplinkwifi.net o a 192.168.0.1 y creá la contraseña de administrador.",
@@ -52,26 +52,26 @@
         hecho: function () { return !!S.estado.practica.admin && !!S.estado.router.adminPass && !!S.estado.practica.reset; } }
     ] },
     { tit: "2- Wi-Fi", pasos: [
-      { id: "wifi", txt: "En Wireless › Wireless Settings: tu SSID y una clave de 8 caracteres o más, con WPA/WPA2 Personal.",
+      { id: "wifi", txt: "En Advanced › Wireless › Wireless Settings: tu SSID y una clave de 8 caracteres o más, con WPA/WPA2 Personal.",
         pista: "Advanced › Wireless › Wireless Settings (o Basic › Wireless). Poné un SSID propio y una clave nueva, y Save.",
         hecho: wifiConfigurado },
-      { id: "celular", txt: "Conectá un celular o una notebook a la red nueva.",
+      { id: "celular", txt: "En «Celular», conectate a la red nueva.",
         pista: "En la pestaña «Celular», elegí tu red y escribí la clave nueva.",
         hecho: function () { var c = S.estado.equipos.cel; return wifiConfigurado() && S.conectado("cel") && c.red.ssid === S.estado.router.wifi.ssid; } }
     ] },
     { tit: "3- DHCP e IP fijas", pasos: [
-      { id: "rango", txt: "Mirá el rango DHCP (Network › LAN Settings) y los dispositivos conectados (Network Map o Client List).",
+      { id: "rango", txt: "En Advanced › Network › LAN Settings, anotá el rango DHCP. Mirá los dispositivos conectados en Client List o en Basic › Network Map.",
         pista: "Advanced › Network › LAN Settings: «IP Address Pool» es el rango DHCP. Basic › Network Map muestra los clientes.",
         hecho: function () { return !!S.estado.practica.vioRango && !!S.estado.practica.vioDispositivos; } },
-      { id: "reserva", txt: "Buscá la MAC de la PC con ipconfig /all y reservale una IP en Address Reservation. Comprobala con ipconfig /release y /renew.",
+      { id: "reserva", txt: "Buscá la MAC de «Tu PC» con ipconfig /all y reservale una IP en Address Reservation. Comprobala con ipconfig /release y /renew.",
         pista: "La MAC es la «Dirección física». En LAN Settings › Address Reservation › Add, cargá la MAC y una IP. Después, en Tu PC: ipconfig /release y ipconfig /renew.",
         hecho: reservaHecha }
     ] },
     { tit: "4- IP fija y copia de seguridad", pasos: [
-      { id: "fija", txt: "En la otra PC, poné una IP fija en Windows, fuera del rango DHCP, y comprobala con ipconfig.",
+      { id: "fija", txt: "En «Otra PC», poné una IP fija en Windows, fuera del rango DHCP, y comprobala con ipconfig.",
         pista: "En «Otra PC» › Conexiones de red: clic derecho en Ethernet › Propiedades › Protocolo de Internet versión 4 (TCP/IPv4) › Propiedades. Después, ipconfig.",
         hecho: function () { return !!S.estado.practica.ipFijaComprobada && revisarIpFija().ok; } },
-      { id: "backup", txt: "En System Tools › Backup & Restore, guardá la configuración en un archivo.",
+      { id: "backup", txt: "En Advanced › System Tools › Backup & Restore, guardá la configuración en un archivo.",
         pista: "Advanced › System Tools › Backup & Restore › Backup: se descarga config.bin.",
         hecho: function () { return !!S.estado.practica.backup; } }
     ] }

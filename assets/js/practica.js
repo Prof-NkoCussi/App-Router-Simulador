@@ -146,7 +146,7 @@
         "<dt>Copia de seguridad</dt><dd>" + (e.practica.backup ? "config.bin descargado" : "no se hizo") + "</dd>" +
         '<dt>Código</dt><dd class="res__codigo">' + codigo() + "</dd></dl>" +
         '<ol class="res__pasos">' + filas + "</ol>" +
-        '<p class="res__entrega">Sacá una captura de esta pantalla (<kbd>Win</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>) y subila a Classroom junto con el archivo <b>config.bin</b>.</p></div>';
+        '<p class="res__entrega">Sacá una captura de esta pantalla (<kbd>Win</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>) y subila a Classroom.</p></div>';
     }
   };
 })(Sim);

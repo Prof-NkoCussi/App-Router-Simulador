@@ -24,7 +24,7 @@ Es una simulación: no es un router real y nada sale de la computadora. El progr
 1. Abrí el link desde una computadora (no funciona en el celular).
 2. Escribí tu nombre y apellido.
 3. Seguí los pasos de la pestaña **Práctica**.
-4. Al terminar, abrí el resumen, sacá una captura y subila a Classroom junto con el archivo `config.bin` de la copia de seguridad.
+4. Al terminar, abrí el resumen, sacá una captura y subila a Classroom.
 
 ## Estructura
 

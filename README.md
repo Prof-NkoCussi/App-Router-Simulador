@@ -2,7 +2,9 @@
 
 Simulador del panel de un router para la práctica del **TP N°8 — Configurando el router** de Redes I (5.º año).
 
-Técnico en Programación · C.T.P. "Olga B. de Arko" · Ushuaia
+C.T.P. "Olga B. de Arko" · Ushuaia
+
+👈 Link:  https://prof-nkocussi.github.io/App-Router-Simulador/
 
 **Prof. Nicolás A. Cussi**
 
